@@ -1,0 +1,21 @@
+#pragma classflags ("updateonly", "forceupdate") 
+#pragma namespace("\\\\.\\root\\subscription") 
+
+instance of __EventFilter as $MyEventFilter {
+  EventNamespace = "Root\\Cimv2";
+  Name  = "TriggerFilter"; 
+  Query = "Select * From __InstanceModificationEvent Where TargetInstance Isa 'Win32_LocalTime' And TargetInstance.Second=5"; 
+  QueryLanguage = "WQL"; 
+};
+
+instance of CommandLineEventConsumer as $MyConsumer {
+  Name = "TriggerConsumer";
+  CommandLineTemplate = "c:\\windows\\system32\\ping.exe 8.8.8.8";
+  RunInteractively = False;
+  WorkingDirectory = "c:\\windows\\temp";
+};
+
+instance of __FilterToConsumerBinding { 
+  Consumer = $MyConsumer; 
+  Filter   = $MyEventFilter; 
+};

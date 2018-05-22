@@ -1,0 +1,29 @@
+# Please consult the documentation for further information on configuration options:
+# https://www.elastic.co/guide/en/elasticsearch/reference/index.html
+#
+# Lock the memory on startup:
+#
+bootstrap.memory_lock: true
+
+# Bind address:
+#
+network.host: 127.0.0.1
+
+# disable x-pack security
+xpack.security.enabled: false
+
+xpack.watcher.enabled: true
+
+xpack.notification.email.account:
+    gmail_account:
+        profile: gmail
+        smtp:
+            auth: true
+            starttls.enable: true
+            host: smtp.gmail.com
+            port: 587
+            user: <insert>
+            password: <insert>
+
+#disable for now to get tables to show up.  Change in production.
+xpack.notification.email.html.sanitization.enabled: false

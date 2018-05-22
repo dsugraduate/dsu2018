@@ -1,0 +1,2 @@
+# disable xpack security
+xpack.security.enabled: false

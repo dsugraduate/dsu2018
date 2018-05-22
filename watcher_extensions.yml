@@ -1,0 +1,138 @@
+{
+  "trigger": {
+    "schedule": {
+      "interval": "1m"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "search_type": "query_then_fetch",
+        "indices": [
+          "<winlogbeat-{now-2m}>",
+          "<winlogbeat-{now}>"
+        ],
+        "types": [],
+        "body": {
+          "from": 0,
+          "size": 10000,
+          "query": {
+            "bool": {
+              "filter": {
+                "range": {
+                  "@timestamp": {
+                    "gte": "now-1m"
+                  }
+                }
+              },
+              "must": {
+                "terms": {
+                  "file_extension.keyword": [
+                    ".402",
+                    ".4035",
+                    ".4090",
+                    ".4091",
+                    ".452",
+                    ".707",
+                    ".725",
+                    ".726",
+                    ".911",
+                    ".f41o1",
+                    ".2cXpCihgsVxB3",
+                    ".3ncrypt3d",
+                    ".au1crypt",
+                    ".BONUM",
+                    ".BRT92",
+                    ".BUSH",
+                    ".C8B089F",
+                    ".CHAK",
+                    ".clinTON",
+                    ".crypt",
+                    ".FIX",
+                    ".fuck",
+                    ".goro",
+                    ".gotham",
+                    ".granny",
+                    ".happ",
+                    ".lpcrestore",
+                    ".keepcalm",
+                    ".LIN",
+                    ".MAKB",
+                    ".medal",
+                    ".mtk118",
+                    ".needdecrypt",
+                    ".needkeys",
+                    ".NIGGA",
+                    ".nWcrypt",
+                    ".paycyka",
+                    ".pizdec",
+                    ".pscrypte",
+                    ".ReaGAN",
+                    ".rubmblegoodboy",
+                    ".s1crypt",
+                    ".scorp",
+                    ".sea",
+                    ".skunk",
+                    ".Trump",
+                    ".UNLIS",
+                    ".vdul",
+                    ".wallet",
+                    ".write_",
+                    ".YAYA",
+                    ".zuzya",
+                    "..doc",
+                    ".xlsm",
+                    ".AK47",
+                    ".STN",
+                    ".coded",
+                    ".cerber3",
+                    ".asasin",
+                    ".ykcol"
+                  ]
+                }
+              }
+            }
+          },
+          "sort": [
+            {
+              "event_data.UtcTime.keyword": "asc"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "condition": {
+    "compare": {
+      "ctx.payload.hits.total": {
+        "gt": 0
+      }
+    }
+  },
+  "actions": {
+    "send_email": {
+      "email": {
+        "profile": "gmail",
+        "attachments": {
+          "dashboard.pdf": {
+            "reporting": {
+              "url": "http://127.0.0.1:5601/api/reporting/generate/dashboard/AWDPFPvTvSdcMfsiRhDe"
+            }
+          },
+          "data.yml": {
+            "data": {
+              "format": "yaml"
+            }
+          }
+        },
+        "to": [
+          "<insert>"
+        ],
+        "subject": "[WATCHER] Potentially Malicious File Extension Found",
+        "body": {
+          "html": "<h1>{{ctx.payload.hits.total}} Potentially Malicious File Extensions Seen In Past 1 Minute</h1>  <h3>File Extensions (timestamp --- extension --- file):</h3>  <ol> {{#ctx.payload.hits.hits}} <li>{{_source.event_data.UtcTime}} --- {{_source.file_extension}}  --- {{_source.event_data.TargetFilename}}</li> {{/ctx.payload.hits.hits}}</ol> <h3>Elastic Discover Query:</h3><a href='http://127.0.0.1:5601/app/kibana#/discover/AWDPG23_vSdcMfsiRhqc'>http://127.0.0.1:5601/app/kibana#/discover/AWDPG23_vSdcMfsiRhqc</a>"
+        }
+      }
+    }
+  }
+}

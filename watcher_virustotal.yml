@@ -1,0 +1,72 @@
+{
+  "trigger": {
+    "schedule": {
+      "interval": "1m"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "search_type": "query_then_fetch",
+        "indices": [
+          "<winlogbeat-{now-2m}>",
+          "<winlogbeat-{now}>"
+        ],
+        "types": [],
+        "body": {
+          "query": {
+            "bool": {
+              "filter": {
+                "range": {
+                  "@timestamp": {
+                    "gt": "now-1m"
+                  }
+                }
+              },
+              "must": {
+                "range": {
+                  "virustotal.positives": {
+                    "gt": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "compare": {
+      "ctx.payload.hits.total": {
+        "gt": 0
+      }
+    }
+  },
+  "actions": {
+    "send_email": {
+      "email": {
+        "profile": "gmail",
+        "attachments": {
+          "dashboard.pdf": {
+            "reporting": {
+              "url": "http://127.0.0.1:5601/api/reporting/generate/dashboard/AWDIhv9bq-FH7NNrhWya"
+            }
+          },
+          "data.yml": {
+            "data": {
+              "format": "yaml"
+            }
+          }
+        },
+        "to": [
+          "<insert>"
+        ],
+        "subject": "[WATCHER] Malicious Virustotal File Executed",
+        "body": {
+          "html": "<h1>{{ctx.payload.hits.total}} Malicious Process Creation Events In Past 1 Minute</h1>  <h3>Hashes:</h3>  <ol> {{#ctx.payload.hits.hits}} <li>{{_source.virustotal.scans.Malwarebytes.result}} <a href='https://www.virustotal.com/#/file/{{_source.SHA256}}'>{{_source.SHA256}}</a></li> {{/ctx.payload.hits.hits}}</ol>"
+        }
+      }
+    }
+  }
+}
